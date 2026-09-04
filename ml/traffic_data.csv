@@ -1,0 +1,27 @@
+vehicle_count,average_speed,distance_km,time_of_day,traffic_level,delay_minutes
+20,45,5,8,Low,3
+30,42,5,9,Low,4
+40,38,5,10,Medium,5
+50,35,5,11,Medium,6
+60,30,5,12,Medium,7
+70,28,5,13,High,8
+80,25,5,14,High,9
+90,22,5,15,High,10
+100,20,5,16,High,11
+110,18,5,17,High,13
+120,15,5,18,Very High,15
+130,12,5,19,Very High,17
+140,10,5,20,Very High,19
+150,8,5,21,Very High,21
+25,44,3,8,Low,2
+45,36,3,10,Medium,4
+65,29,3,12,Medium,6
+85,23,3,14,High,8
+105,17,3,17,High,11
+125,13,3,19,Very High,14
+35,40,7,9,Low,5
+55,32,7,11,Medium,8
+75,26,7,13,High,10
+95,20,7,16,High,14
+115,15,7,18,Very High,18
+145,9,7,20,Very High,24

@@ -1,14 +1,168 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Traffic Police Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Traffic Police Control Room</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
+
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    body {
+      align-items: flex-start;
+      padding: 30px 0;
+    }
+
+    .container {
+      max-width: 800px;
+    }
+
+    #connectionStatus {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #333;
+      color: #f1c40f;
+      font-weight: bold;
+    }
+
+    #policeMap {
+      width: 100%;
+      height: 400px;
+      margin-top: 20px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .alert-card {
+      background: white;
+      color: #222;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      text-align: left;
+    }
+
+    .alert-card h3 {
+      margin-top: 0;
+      color: #d32f2f;
+    }
+
+    .alert-card p {
+      margin: 8px 0;
+      font-size: 16px;
+    }
+
+    .map-link {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 15px;
+      background: #1976d2;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .status-active {
+      color: red;
+      font-weight: bold;
+    }
+
+    .hospital-list {
+      margin-top: 20px;
+    }
+
+    .hospital-card {
+      background: white;
+      color: #222;
+      padding: 15px;
+      margin-top: 12px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+
+    .hospital-card h3 {
+      margin-top: 0;
+      color: #1976d2;
+    }
+
+    .hospital-card p {
+      margin: 6px 0;
+    }
+
+    .direction-btn {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #2ecc71;
+      color: black;
+      text-decoration: none;
+      border-radius: 7px;
+      font-weight: bold;
+    }
+  </style>
 </head>
+
 <body>
 
-<h1>🚓 Traffic Police Control Room</h1>
-<div id="alertBox">No emergency alerts</div>
+  <div class="container">
 
-<script src="police.js"></script>
+    <h1>🚓 Traffic Police Control Room</h1>
+
+    <p class="subtitle">
+      Smart Emergency Traffic Alert Dashboard
+    </p>
+
+    <div id="connectionStatus">
+      🔄 Connecting to emergency alert server...
+    </div>
+
+    <div id="alertBox">
+
+      <h2>🚨 Emergency Alerts</h2>
+
+      <p id="noAlert">
+        No emergency alerts received yet.
+      </p>
+
+    </div>
+
+    <div class="location-box">
+
+      <h2>📍 Emergency Vehicle Location</h2>
+
+      <div id="policeMap"></div>
+
+    </div>
+
+    <div class="hospital-list">
+
+      <h2>🏥 Nearby Hospitals</h2>
+
+      <div id="hospitalList">
+        <p>
+          Nearby hospitals will appear here after an emergency alert.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Police Dashboard JS -->
+  <script src="police.js" defer></script>
+
 </body>
 </html>
