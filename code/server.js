@@ -7,15 +7,12 @@ const { spawn } = require("child_process");
 
 const app = express();
 
-
 // ==========================================
 // MIDDLEWARE
 // ==========================================
 
 app.use(cors());
-
 app.use(express.json());
-
 
 // ==========================================
 // SERVE FRONTEND
@@ -27,13 +24,11 @@ app.use(
   )
 );
 
-
 // ==========================================
 // HOME PAGE
 // ==========================================
 
 app.get("/", (req, res) => {
-
   res.sendFile(
     path.join(
       __dirname,
@@ -42,16 +37,13 @@ app.get("/", (req, res) => {
       "index.html"
     )
   );
-
 });
-
 
 // ==========================================
 // POLICE DASHBOARD
 // ==========================================
 
 app.get("/police", (req, res) => {
-
   res.sendFile(
     path.join(
       __dirname,
@@ -60,16 +52,13 @@ app.get("/police", (req, res) => {
       "police.html"
     )
   );
-
 });
-
 
 // ==========================================
 // ML TRAFFIC PREDICTION API
 // ==========================================
 
 app.post("/predict-traffic", (req, res) => {
-
   const {
     vehicle_count,
     average_speed,
@@ -77,22 +66,21 @@ app.post("/predict-traffic", (req, res) => {
     time_of_day
   } = req.body;
 
+  // ========================================
+  // CHECK INPUT VALUES
+  // ========================================
 
-  // Check input values
   if (
     vehicle_count === undefined ||
     average_speed === undefined ||
     distance_km === undefined ||
     time_of_day === undefined
   ) {
-
     return res.status(400).json({
       success: false,
       message: "Missing traffic input values"
     });
-
   }
-
 
   console.log("\n🤖 ML Prediction Request:");
   console.log("Vehicle Count:", vehicle_count);
@@ -100,75 +88,63 @@ app.post("/predict-traffic", (req, res) => {
   console.log("Distance:", distance_km);
   console.log("Time:", time_of_day);
 
-
   // ========================================
   // RUN PYTHON ML SCRIPT
   // ========================================
 
   const python = spawn(
-    "py",
+    "python3",
     [
       "predict.py",
-      vehicle_count,
-      average_speed,
-      distance_km,
-      time_of_day
+      String(vehicle_count),
+      String(average_speed),
+      String(distance_km),
+      String(time_of_day)
     ],
     {
       cwd: path.join(__dirname, "..", "ml")
     }
   );
 
-
   let output = "";
   let errorOutput = "";
 
+  // ========================================
+  // RECEIVE PYTHON OUTPUT
+  // ========================================
 
-  // Receive Python output
   python.stdout.on("data", (data) => {
-
     output += data.toString();
-
   });
 
+  // ========================================
+  // RECEIVE PYTHON ERRORS
+  // ========================================
 
-  // Receive Python errors
   python.stderr.on("data", (data) => {
-
     errorOutput += data.toString();
-
   });
 
+  // ========================================
+  // PYTHON PROCESS FINISHED
+  // ========================================
 
-  // Python process finished
   python.on("close", (code) => {
-
     if (code !== 0) {
-
-      console.log(
-        "❌ ML prediction failed:"
-      );
-
+      console.log("❌ ML prediction failed:");
       console.log(errorOutput);
 
       return res.status(500).json({
-
         success: false,
-
         message: "ML prediction failed",
-
         error: errorOutput
-
       });
-
     }
 
-
     try {
-
-      const result =
-        JSON.parse(output.trim());
-
+      const result = JSON.parse(
+        output.trim()
+      );
 
       console.log(
         "🤖 Predicted Delay:",
@@ -176,40 +152,45 @@ app.post("/predict-traffic", (req, res) => {
         "minutes"
       );
 
-
       res.json({
-
         success: true,
-
         predicted_delay:
           result.predicted_delay
-
       });
 
-
     } catch (error) {
-
       console.log(
         "❌ Error reading ML result:",
         error.message
       );
 
-
       res.status(500).json({
-
         success: false,
-
         message:
           "Invalid ML prediction result"
-
       });
-
     }
-
   });
 
-});
+  // ========================================
+  // PYTHON PROCESS ERROR
+  // ========================================
 
+  python.on("error", (error) => {
+    console.log(
+      "❌ Unable to start Python:",
+      error.message
+    );
+
+    if (!res.headersSent) {
+      res.status(500).json({
+        success: false,
+        message: "Python runtime error",
+        error: error.message
+      });
+    }
+  });
+});
 
 // ==========================================
 // CREATE HTTP SERVER
@@ -217,19 +198,14 @@ app.post("/predict-traffic", (req, res) => {
 
 const server = http.createServer(app);
 
-
 // ==========================================
 // CREATE WEBSOCKET SERVER
 // ==========================================
 
 const wss = new WebSocket.Server({
-
   server: server,
-
   path: "/ws"
-
 });
-
 
 // ==========================================
 // STORE CONNECTED CLIENTS
@@ -237,33 +213,26 @@ const wss = new WebSocket.Server({
 
 const clients = new Set();
 
-
 // ==========================================
 // WEBSOCKET CONNECTION
 // ==========================================
 
 wss.on("connection", (socket) => {
-
   console.log(
     "🔌 New WebSocket client connected"
   );
 
   clients.add(socket);
 
-
-  // ----------------------------------------
+  // ========================================
   // RECEIVE MESSAGE
-  // ----------------------------------------
+  // ========================================
 
   socket.on("message", (message) => {
-
     try {
-
-      const data =
-        JSON.parse(
-          message.toString()
-        );
-
+      const data = JSON.parse(
+        message.toString()
+      );
 
       console.log(
         "🚨 Emergency Alert Received:"
@@ -271,70 +240,54 @@ wss.on("connection", (socket) => {
 
       console.log(data);
 
-
-      // --------------------------------------
+      // ======================================
       // SEND ALERT TO ALL CONNECTED CLIENTS
-      // --------------------------------------
+      // ======================================
 
       clients.forEach((client) => {
-
         if (
           client.readyState ===
           WebSocket.OPEN
         ) {
-
           client.send(
             JSON.stringify(data)
           );
-
         }
-
       });
 
     } catch (error) {
-
       console.log(
         "❌ Error processing emergency alert:",
         error.message
       );
-
     }
-
   });
 
-
-  // ----------------------------------------
+  // ========================================
   // CLIENT DISCONNECTED
-  // ----------------------------------------
+  // ========================================
 
   socket.on("close", () => {
-
     console.log(
       "🔌 WebSocket client disconnected"
     );
 
     clients.delete(socket);
-
   });
 
-
-  // ----------------------------------------
+  // ========================================
   // CONNECTION ERROR
-  // ----------------------------------------
+  // ========================================
 
   socket.on("error", (error) => {
-
     console.log(
       "⚠️ WebSocket error:",
       error.message
     );
 
     clients.delete(socket);
-
   });
-
 });
-
 
 // ==========================================
 // START SERVER
@@ -343,12 +296,10 @@ wss.on("connection", (socket) => {
 const PORT =
   process.env.PORT || 3000;
 
-
 server.listen(
   PORT,
   "0.0.0.0",
   () => {
-
     console.log(
       "🚑 Smart Emergency Traffic Alert Server running on port " +
       PORT
@@ -364,6 +315,5 @@ server.listen(
       PORT +
       "/police"
     );
-
   }
 );

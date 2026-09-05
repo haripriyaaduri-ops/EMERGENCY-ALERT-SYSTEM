@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Smart Emergency Traffic Alert</title>
+
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
+
+
+  <!-- Main CSS -->
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+
+  <style>
+
+    /* ==========================================
+       MAP
+       ========================================== */
+
+    #map {
+      width: 100%;
+      height: 350px;
+      margin-top: 20px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #222;
+    }
+
+
+    /* ==========================================
+       LOCATION BOX
+       ========================================== */
+
+    .location-box {
+      margin-top: 20px;
+    }
+
+
+    /* ==========================================
+       MAP BUTTON
+       ========================================== */
+
+    .map-btn {
+      margin-top: 12px;
+      background: #2ecc71;
+      color: black;
+      cursor: pointer;
+    }
+
+
+    .map-btn:hover {
+      background: #27ae60;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- ==========================================
+       MAIN CONTAINER
+       ========================================== -->
+
+  <div class="container">
+
+
+    <!-- ==========================================
+         TITLE
+         ========================================== -->
+
+    <h2>
+      🚨 Smart Emergency Traffic Alert
+    </h2>
+
+
+    <p class="subtitle">
+      Send your emergency details to nearby traffic police
+    </p>
+
+
+    <!-- ==========================================
+         VEHICLE NUMBER
+         ========================================== -->
+
+    <label for="vehicleNumber">
+      🚗 Vehicle Number
+    </label>
+
+
+    <input
+      type="text"
+      id="vehicleNumber"
+      placeholder="Example: AP37AB1234"
+      required
+    >
+
+
+    <!-- ==========================================
+         EMERGENCY TYPE
+         ========================================== -->
+
+    <label for="emergencyType">
+      🚨 Emergency Type
+    </label>
+
+
+    <select id="emergencyType">
+
+      <option value="Medical Emergency">
+        Medical Emergency
+      </option>
+
+      <option value="Fire Emergency">
+        Fire Emergency
+      </option>
+
+      <option value="Accident">
+        Accident
+      </option>
+
+      <option value="Other Emergency">
+        Other Emergency
+      </option>
+
+    </select>
+
+
+    <!-- ==========================================
+         EMERGENCY DETAILS
+         ========================================== -->
+
+    <label for="emergencyDetails">
+      📝 Emergency Details
+    </label>
+
+
+    <textarea
+      id="emergencyDetails"
+      rows="4"
+      placeholder="Briefly describe the emergency..."
+    ></textarea>
+
+
+    <!-- ==========================================
+         SEND EMERGENCY ALERT
+         ========================================== -->
+
+    <button
+      onclick="sendAlert()"
+      class="alert-btn"
+    >
+      🚨 Send Emergency Alert
+    </button>
+
+
+    <!-- ==========================================
+         STATUS MESSAGE
+         ========================================== -->
+
+    <p id="statusMessage"></p>
+
+
+    <!-- ==========================================
+         CURRENT LOCATION
+         ========================================== -->
+
+    <div class="location-box">
+
+
+      <h3>
+        📍 Current Location
+      </h3>
+
+
+      <p id="locationText">
+        Fetching location...
+      </p>
+
+
+      <p id="coords"></p>
+
+
+      <!-- ========================================
+           LEAFLET MAP
+           ======================================== -->
+
+      <div id="map"></div>
+
+
+      <!-- ========================================
+           OPEN MAP
+           ======================================== -->
+
+      <button
+        type="button"
+        class="map-btn"
+        onclick="openInMaps()"
+      >
+        🗺️ Open in Map
+      </button>
+
+
+    </div>
+
+
+  </div>
+
+
+  <!-- ==========================================
+       SOS SOUND
+       ========================================== -->
+
+  <audio
+    id="sosSound"
+    src="sos.mp3"
+  ></audio>
+
+
+  <!-- ==========================================
+       LEAFLET JS
+       ========================================== -->
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+  </script>
+
+
+  <!-- ==========================================
+       MAIN JAVASCRIPT
+       ========================================== -->
+
+  <script
+    type="module"
+    src="script.js">
+  </script>
+
+
+</body>
+
+</html>
